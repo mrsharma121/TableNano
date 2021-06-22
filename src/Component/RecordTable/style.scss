@@ -1,0 +1,58 @@
+*{
+    box-sizing: border-box;
+    margin: 0%;
+    padding: 0%;
+}
+
+.record-table{
+    width: 100%;
+    border: 1px solid black;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.record-table-row{
+    width: auto;
+    // display: flex;
+    // display: -webkit-flex;
+    
+}
+
+
+.record-table-column{
+    // white-space: normal;
+    width: 300px;
+    // padding: 1% 0.5%;
+    text-align: left;
+    border: 1px solid black;
+    min-width: 143px;
+    white-space: normal;
+}
+
+
+#keyToggle{
+    width: 96px;
+    height: 29px;
+    cursor: pointer;
+    position: relative;
+    left: 83%;
+}
+
+
+.Suggestion-box{
+    height: 30vh;
+    overflow-y: scroll;
+}
+
+.header-suggestion{
+    position: relative;
+    left: 85%;
+    width: 96px;
+    padding: 2px;
+}
+
+.header-suggestion:hover{
+    background-color: gray;
+    color: white;
+    cursor: pointer;
+}
