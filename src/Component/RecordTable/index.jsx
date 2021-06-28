@@ -3,75 +3,100 @@ import Table from "./Table";
 import Row from "./Row";
 import Column from "./Column";
 import Suggestion from "./SuggestionBox";
+import Pagination from "./Pagination";
 import "./style.scss";
+import "./master.scss";
 const RecordTable = (props) => {
   const [state, setState] = useState({
-    rowData: null,
     constantRowData: null,
+    rowData: null,
     tableHead: [],
-    showSuggestionDisplay: false,
+    totalRows: props.rowData.length,
+    hideCol: [],
   });
 
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      let customState = JSON.parse(JSON.stringify(state));
+    setState((prev) => {
+      let customState = JSON.parse(JSON.stringify(prev));
       customState.rowData = props.rowData;
       customState.constantRowData = props.rowData;
       Object.keys(props.rowData[0]).map((key) =>
         customState.tableHead.push(key)
       );
-      setState(customState);
-    }
-    return function cleanup() {
-      mounted = false;
-    };
+      return customState;
+    });
   }, []);
 
-  // rowData.map(({["Task ID"]:TaskID ,  ...item})=>(
-  //   console.log(item)
-  // ))
+  const showHideSuggestions = (suggestions) => {
+    setState((prev) => {
+      let customState = JSON.parse(JSON.stringify(prev));
+      customState.hideCol = suggestions;
+      return customState;
+    });
+    return suggestions;
+  };
 
-  // Object.keys(rowData[0]).map((value, keyIndex)=>(
-  //   tableHead.push(value)
-  //   ))
+  const handlePerPageData = (data) => {
+    if (data >= 5) {
+      setState((prev) => {
+        let customState = JSON.parse(JSON.stringify(prev));
+        customState.rowData = customState.constantRowData.slice(0, data);
+        return customState;
+      });
+    }
+  };
 
-  // const toggleHeader = (e) =>{
-  //   if (!e.target.checked){
-  //       var index = filteredData.indexOf(e.target.value)
-  //       // console.log(index)
-  //       // if(index > -1){
-  //       //   tableHead.splice(index, 1)
-  //       // }
-  //       // console.log(tableHead)
-  //     // console.log(e.target.value)
-  //   }
-  // }
+  const setPageData = (page) => {
+    console.log(page);
+    setState((prev) => {
+      let customState = JSON.parse(JSON.stringify(prev));
+      customState.rowData = customState.constantRowData.slice(page[0], page[1]);
+      return customState;
+    });
+  };
 
   return (
-    <div>
-      <Suggestion state={state} setState={setState} />
+    <div className="flex flex-center-center" style={{ position: "relative" }}>
+      <Suggestion
+        suggestions={state.tableHead}
+        toggleData={["Task Name", "Sprint", "Epic"]}
+        getBackToggleData={showHideSuggestions}
+      />
       <Table>
         {state.rowData
           ? state.rowData.map((row, rowIndex) => (
               <>
                 {rowIndex === 0 && (
-                  <Row>
+                  <Row style={{ position: "sticky", top: "0" }}>
                     {Object.entries(row).map(
                       ([key, value], index) =>
-                        value !== null && <Column>{key}</Column>
+                        !state.hideCol.includes(key) && (
+                          <Column className="record-table-header-col font-normal color-black font-weight-medium">
+                            {key}
+                          </Column>
+                        )
                     )}
                   </Row>
                 )}
                 <Row>
-                  {Object.values(row).map(
-                    (col, colIndex) => col !== null && <Column>{col}</Column>
+                  {Object.entries(row).map(
+                    ([colkey, colval], colIndex) =>
+                      !state.hideCol.includes(colkey) && (
+                        <Column>{colval}</Column>
+                      )
                   )}
                 </Row>
               </>
             ))
           : ""}
       </Table>
+
+      <Pagination
+        dataPerPage={5}
+        setPerPageData={handlePerPageData}
+        totalRows={state.totalRows}
+        getPageData={setPageData}
+      />
     </div>
   );
 };

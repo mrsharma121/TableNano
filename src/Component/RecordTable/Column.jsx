@@ -1,12 +1,15 @@
 import React from "react";
 
 function Column(props) {
-  // console.log(rowData[0])
-  // Object.keys(rowData[0]).map(e => console.log(e));
   return (
-    <td className="record-table-column" {...props.style}>
+    <div
+      className={`record-table-column ${
+        props.className ? props.className : ""
+      }`}
+      {...props.style}
+    >
       {props.children}
-    </td>
+    </div>
   );
 }
 

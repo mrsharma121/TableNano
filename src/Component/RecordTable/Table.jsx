@@ -1,14 +1,16 @@
-import React from 'react'
+import React from "react";
 
-
-function Table({children}) {
-    return (
-        // <table>
-        <div className="record-table">
-        {children}
-        </div>    
-        // </table> 
-    )
+function Table(props) {
+  return (
+    <div
+      className={`inline-row w100 record-table ${
+        props.className ? props.className : ""
+      }`}
+      {...props.style}
+    >
+      {props.children}
+    </div>
+  );
 }
 
-export default Table
+export default Table;

@@ -1,59 +1,80 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import AddRoundedIcon from "@material-ui/icons/AddRounded";
+import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 
 const Suggestion = (props) => {
-  const toggleItSelf = () => {
-    let state = JSON.parse(JSON.stringify(props.state));
-    state.showSuggestionDisplay = !props.state.showSuggestionDisplay;
-    props.setState(state);
+  const [showSuggestion, setShowSuggestion] = useState(false);
+  const [toggleList, setToggleList] = useState(props.toggleData);
+  let menuref = useRef();
+
+  useEffect(() => {
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("down", close);
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      props.getBackToggleData(toggleList);
+    }, 0);
+  }, [toggleList]);
+
+  const close = (event) => {
+    if (!menuref.current.contains(event.target)) {
+      setShowSuggestion(false);
+    }
   };
 
-  const toggleColumn = (event) => {
-    let val = null;
-    props.setState((oldstate) => {
-      let state = JSON.parse(JSON.stringify(oldstate));
+  const updateToggleList = (event) => {
+    setToggleList((prev) => {
+      let arr = JSON.parse(JSON.stringify(prev));
       if (!event.target.checked) {
-        state.rowData.map((row, index) => {
-          row[event.target.value] = null;
-        });
+        arr.push(event.target.value);
       } else {
-        state.constantRowData.map((constantRow, index) => {
-          Object.entries(constantRow).map(([key, value]) => {
-            if (key === event.target.value) {
-              val = value;
-            }
-          });
-          state.rowData.map((row, index2) => {
-            if (index2 === index) {
-              row[event.target.value] = val;
-            }
-          });
-        });
+        arr.splice(arr.indexOf(event.target.value), 1);
       }
-
-      return state;
+      return arr;
     });
   };
 
   return (
-    <div>
-      <input id="keyToggle" type="button" onClick={() => toggleItSelf()} />
-      {props.state.showSuggestionDisplay ? (
-        <div className="Suggestion-box">
-          {props.state.tableHead.map((val, index) => (
-            <div className="header-suggestion" key={index}>
+    <div className="flex suggestion" ref={menuref}>
+      <div
+        className={`flex flex-center-center suggestion-lock
+        `}
+        onClick={() =>
+          setShowSuggestion((prev) => {
+            return !prev;
+          })
+        }
+      >
+        <AddRoundedIcon stroke={"#8f97a6"} strokeWidth={1} />
+      </div>
+
+      {showSuggestion && (
+        <div className="suggestion-list">
+          {props.suggestions.map((value, index) => (
+            <div className="suggestion-label">
               <input
-                onChange={(event) => toggleColumn(event)}
-                key={index}
+                onChange={(event) => updateToggleList(event)}
                 type="checkbox"
-                value={val}
-                defaultChecked={true}
+                value={value}
+                defaultChecked={!toggleList.includes(value)}
+                id={value}
               />
-              {val}
+              <label
+                htmlFor={value}
+                className="flex w100 ph font-normal font-weight-medium "
+              >
+                <span className="flex flex-center-center custom-check">
+                  <CheckRoundedIcon stroke={"white"} strokeWidth={3} />
+                </span>
+                <span className="flex flex-center-center mlr-large">
+                  {value}
+                </span>
+              </label>
             </div>
           ))}
         </div>
-      ) : (
-        ""
       )}
     </div>
   );

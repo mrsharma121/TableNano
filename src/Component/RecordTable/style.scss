@@ -1,58 +1,211 @@
-*{
-    box-sizing: border-box;
-    margin: 0%;
-    padding: 0%;
+* {
+  box-sizing: border-box;
+  margin: 0%;
+  padding: 0%;
 }
 
-.record-table{
-    width: 100%;
-    border: 1px solid black;
-    overflow: auto;
-    white-space: nowrap;
+.record-table {
+  border: 0.1vw solid #ceced1;
+  padding: 0;
+  border-radius: 0.4vw;
+  overflow: auto;
+  white-space: nowrap;
+  max-height: 30vw;
 }
 
-.record-table-row{
-    width: auto;
-    // display: flex;
-    // display: -webkit-flex;
-    
+.record-table::-webkit-scrollbar {
+  height: 0.4vw;
+  width: 0.4vw;
+}
+.record-table::-webkit-scrollbar-thumb {
+  background-color: #ceced1;
 }
 
-
-.record-table-column{
-    // white-space: normal;
-    width: 300px;
-    // padding: 1% 0.5%;
-    text-align: left;
-    border: 1px solid black;
-    min-width: 143px;
-    white-space: normal;
+.record-table-row {
+  width: auto;
 }
 
+.record-table-column {
+  display: table-cell;
+  min-width: 15vw;
+  text-align: left;
+  border: 1px solid black;
+  white-space: normal;
+  padding: 1vw;
+}
 
-#keyToggle{
-    width: 96px;
-    height: 29px;
+.record-table-header-col {
+  vertical-align: middle;
+  border: none;
+  border-left: 0.1vw solid #ceced1;
+  background: #e8e8f7;
+}
+
+#keyToggle {
+  width: 96px;
+  height: 29px;
+  cursor: pointer;
+  position: relative;
+  left: 83%;
+}
+
+.Suggestion-box {
+  height: 30vh;
+  overflow-y: scroll;
+}
+
+.header-suggestion {
+  position: relative;
+  left: 85%;
+  width: 96px;
+  padding: 2px;
+}
+
+.header-suggestion:hover {
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+}
+
+.record-table-header-col:first-of-type {
+  border-top-left-radius: 0.4vw;
+  border: none;
+}
+.record-table-header-col:last-of-type {
+  border-top-right-radius: 0.4vw;
+}
+
+.suggestion {
+  position: absolute;
+  right: 0.5%;
+  top: 0.5%;
+  z-index: 6;
+}
+
+.suggestion-lock {
+  width: 1.5vw;
+  height: 1.5vw;
+  border-radius: 50%;
+  background-color: #efeeee;
+  box-shadow: 0.108vw 0.108vw 0.27vw #b8b9be inset,
+    -0.162vw -0.162vw 0.378vw #fff inset;
+  cursor: pointer;
+
+  svg {
+    width: 1.3vw;
+    height: 1.3vw;
+    color: #8f97a6;
+  }
+}
+
+.suggestion-list {
+  position: absolute;
+  z-index: 6;
+  top: 120%;
+  right: 0;
+  width: 15vw;
+  border-radius: 0.4vw;
+  background: #fff;
+  box-shadow: 0.162vw -0.162vw 0.378vw #b8b9be;
+  display: block;
+  float: left;
+  height: 25vw;
+  overflow: scroll;
+}
+
+.suggestion-list::-webkit-scrollbar {
+  width: 0.3vw;
+}
+.suggestion-list::-webkit-scrollbar-thumb {
+  background-color: #615dc6;
+}
+
+.suggestion-label {
+  label {
     cursor: pointer;
-    position: relative;
-    left: 83%;
+
+    .custom-check {
+      width: 1.2vw;
+      height: 1.2vw;
+      border: 0.15vw solid #e8e8f7;
+      background: #fff;
+      border-radius: 0.2vw;
+
+      svg {
+        display: none;
+        width: 0.8vw;
+        height: 0.8vw;
+      }
+    }
+  }
+
+  [type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  [type="checkbox"]:checked + label {
+    .custom-check {
+      background: #615dc6;
+      border: 0.15vw solid #615dc6;
+      svg {
+        display: block;
+      }
+    }
+  }
 }
 
-
-.Suggestion-box{
-    height: 30vh;
-    overflow-y: scroll;
+.suggestion-label:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 
-.header-suggestion{
-    position: relative;
-    left: 85%;
-    width: 96px;
-    padding: 2px;
-}
-
-.header-suggestion:hover{
-    background-color: gray;
-    color: white;
+.pagination {
+  .arrow {
+    width: 1.5vw;
+    height: 1.5vw;
+    border-radius: 50%;
+    box-shadow: 0.108vw 0.108vw 0.27vw #b8b9be inset,
+      -0.162vw -0.162vw 0.378vw #fff inset;
     cursor: pointer;
+
+    svg {
+      width: 0.9vw;
+      height: 0.9vw;
+    }
+  }
+
+  input {
+    width: 3vw;
+    outline: none !important;
+    border-radius: 0.2vw;
+    border: 0.1vw solid #ceced1;
+    margin: 0 1vw;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  .page {
+    width: 2vw;
+    height: 2vw;
+    margin: 0 0.1vw;
+  }
+
+  .arrow:hover {
+    transform: scale(1.1);
+  }
+
+  .active {
+    background: #615dc6;
+    color: #fff;
+    box-shadow: none;
+  }
 }
