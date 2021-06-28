@@ -4,8 +4,9 @@ import Row from "./Row";
 import Column from "./Column";
 import Suggestion from "./SuggestionBox";
 import Pagination from "./Pagination";
-import "./style.scss";
+import Slider from "./Slider";
 import "./master.scss";
+import "./style.scss";
 const RecordTable = (props) => {
   const [state, setState] = useState({
     constantRowData: null,
@@ -13,9 +14,11 @@ const RecordTable = (props) => {
     tableHead: [],
     totalRows: props.rowData.length,
     hideCol: [],
+    sliderWidth: "1vw",
   });
 
   useEffect(() => {
+    let mounted = true;
     setState((prev) => {
       let customState = JSON.parse(JSON.stringify(prev));
       customState.rowData = props.rowData;
@@ -25,7 +28,8 @@ const RecordTable = (props) => {
       );
       return customState;
     });
-  }, []);
+    return () => (mounted = false);
+  }, [props.rowData]);
 
   const showHideSuggestions = (suggestions) => {
     setState((prev) => {
@@ -55,6 +59,14 @@ const RecordTable = (props) => {
     });
   };
 
+  const setSliderWidth = (width) => {
+    setState((prev) => {
+      let customState = JSON.parse(JSON.stringify(prev));
+      customState.sliderWidth = width;
+      return customState;
+    });
+  };
+
   return (
     <div className="flex flex-center-center" style={{ position: "relative" }}>
       <Suggestion
@@ -62,12 +74,19 @@ const RecordTable = (props) => {
         toggleData={["Task Name", "Sprint", "Epic"]}
         getBackToggleData={showHideSuggestions}
       />
+      <Slider data={state.rowData} getBackSliderWidth={setSliderWidth} />
       <Table>
         {state.rowData
           ? state.rowData.map((row, rowIndex) => (
-              <>
+              <div className="inline-row">
                 {rowIndex === 0 && (
-                  <Row style={{ position: "sticky", top: "0" }}>
+                  <Row
+                    style={{
+                      position: "sticky",
+                      top: "0",
+                      marginLeft: state.sliderWidth,
+                    }}
+                  >
                     {Object.entries(row).map(
                       ([key, value], index) =>
                         !state.hideCol.includes(key) && (
@@ -78,7 +97,7 @@ const RecordTable = (props) => {
                     )}
                   </Row>
                 )}
-                <Row>
+                <Row style={{ marginLeft: state.sliderWidth }}>
                   {Object.entries(row).map(
                     ([colkey, colval], colIndex) =>
                       !state.hideCol.includes(colkey) && (
@@ -86,7 +105,7 @@ const RecordTable = (props) => {
                       )
                   )}
                 </Row>
-              </>
+              </div>
             ))
           : ""}
       </Table>

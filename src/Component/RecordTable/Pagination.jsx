@@ -3,7 +3,6 @@ import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
 import { useState } from "react";
 import { useEffect } from "react";
-import { CompassCalibrationOutlined } from "@material-ui/icons";
 
 const Pagination = (props) => {
   const [dataPerPage, setDataPerPage] = useState(
@@ -12,6 +11,10 @@ const Pagination = (props) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pages, setPages] = useState({});
+  const [pageBtnCount, setpageBtnCount] = useState({
+    startPos: 1,
+    lastPos: 4,
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -28,6 +31,18 @@ const Pagination = (props) => {
 
   useEffect(() => {
     console.log(pages);
+    setpageBtnCount((prev) => {
+      let cs = JSON.parse(JSON.stringify(prev));
+      if (cs.lastPos === currentPage) {
+        cs.startPos = cs.lastPos;
+        cs.lastPos = cs.lastPos + 3;
+      } else if (currentPage === cs.startPos - 1) {
+        cs.lastPos = cs.startPos;
+        cs.startPos = cs.startPos - 3;
+      }
+      return cs;
+    });
+    console.log(pageBtnCount);
     setTimeout(() => {
       props.getPageData(pages[currentPage]);
     }, 0);
@@ -97,26 +112,22 @@ const Pagination = (props) => {
         <div className="flex font-normal font-weight-medium">
           {pages &&
             Object.entries(pages).map(([key, val], index) => (
-              <div className="flex flex-center-center">
-                <div
-                  className={`flex flex-center-center ph-small arrow page ${
-                    currentPage === key ? "active" : ""
-                  }`}
-                  onClick={() => setCurrentPage((prev) => key)}
-                >
-                  {key}
-                </div>
-              </div>
+              <>
+                {Number(key) < pageBtnCount.lastPos &&
+                  Number(key) >= pageBtnCount.startPos && (
+                    <div className="flex flex-center-center">
+                      <div
+                        className={`flex flex-center-center ph-small arrow page ${
+                          currentPage === Number(key) ? "active" : ""
+                        }`}
+                        onClick={() => setCurrentPage((prev) => Number(key))}
+                      >
+                        {key}
+                      </div>
+                    </div>
+                  )}
+              </>
             ))}
-
-          {/* <div className="flex flex-center-center ">
-            <div className="flex flex-center-center ph-small arrow page active">
-              2
-            </div>
-          </div>
-          <div className="flex flex-center-center">
-            <div className="flex flex-center-center ph-small arrow page">3</div>
-          </div> */}
         </div>
         <div className="flex flex-center-center" style={{ marginLeft: "1vw" }}>
           <div
